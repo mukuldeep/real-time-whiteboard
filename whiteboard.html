@@ -1,0 +1,90 @@
+
+<!DOCTYPE html>
+<html>
+<body>
+
+<script src="/socket.io/socket.io.js"></script>
+
+<script>
+//socket init
+var socket = io();
+
+//canvas append to document
+var canvas = document.createElement('canvas');
+document.body.appendChild(canvas);
+
+//styles
+document.body.style.margin = 0;
+canvas.style.position = 'fixed';
+
+// canvas 2D context and resize
+var ctx = canvas.getContext('2d');
+resize();
+
+//initializing variables with last known position
+var pos = { x: 0, y: 0 };
+
+window.addEventListener('resize', resize);
+document.addEventListener('mousemove', draw);
+document.addEventListener('mousedown', setPosition);
+document.addEventListener('mouseenter', setPosition);
+canvas.addEventListener('touchmove', draw,false);
+canvas.addEventListener('touchstart', setPosition,false);
+canvas.addEventListener('touchend', setPosition,false);
+
+// new position from mouse event
+function setPosition(e) {
+  pos.x = e.clientX;
+  pos.y = e.clientY;
+}
+
+// resize canvas
+function resize() {
+  ctx.canvas.width = window.innerWidth;
+  ctx.canvas.height = window.innerHeight;
+}
+
+function draw(e) {
+  // mouse left button must be pressed
+  var msg="";
+  if (e.buttons !== 1) return;
+	var x1,x2,y1,y2;
+  console.log("from ("+pos.x+","+pos.y+")");
+  msg="+>>from ("+pos.x+","+pos.y+")";
+  x1=pos.x;y1=pos.y;
+  setPosition(e);
+  
+  console.log("to ("+pos.x+","+pos.y+")");
+  msg+="to ("+pos.x+","+pos.y+")";
+  x2=pos.x;y2=pos.y;
+  //emitting message
+  var arr=[x1,y1,x2,y2];
+  socket.emit('board activity',arr);
+  //draw_line(x1,y1,x2,y2);
+  
+}
+
+function draw_line(x1,y1,x2,y2){
+  ctx.beginPath(); // begin
+  ctx.lineWidth = 2;
+  ctx.lineCap = 'round';
+  ctx.strokeStyle = '#c0392b';
+
+  ctx.moveTo(x1, y1); // from
+  
+  ctx.lineTo(x2, y2); // to
+  
+  ctx.stroke(); // draw it!
+  
+}
+
+
+socket.on('board activity', function(msg) {
+	draw_line(msg[0],msg[1],msg[2],msg[3]);
+	console.log(msg);
+  });
+
+</script>
+
+</body>
+</html>
