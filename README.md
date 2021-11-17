@@ -1,6 +1,9 @@
 ## realtime-whiteboard
 white board for realtime collaboration
 
+# Article  
+Available at https://johnnn.tech/created-an-online-whiteboard-within-30-minutes-how/580888/
+
 # Installation guide
 1. Install node if not already installed. official download link https://nodejs.org/en/download/
 2. create ```mkdir directory_path_and_name``` and move to the project directory ```cd directory_path```
